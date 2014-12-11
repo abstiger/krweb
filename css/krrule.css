@@ -1,0 +1,74 @@
+table.krrule {
+    border-width: 0px;
+}
+
+.krrule {
+    font-size: 14px;
+    font-weight: normal;
+    box-sizing: border-box;
+    color: black;
+    background-color: white;
+    cursor: default;
+    margin: 0em;
+}
+
+.krrule-add-rel {
+    border: 1px solid;
+}
+
+.krrule-add-logic {
+    background-image: url('../images/add.png');
+    height: 16px;
+    width: 16px;
+    border-style: hidden;
+    text-align:center;
+}
+
+.krrule-remove {
+    background-image: url('../images/remove.png');
+    height: 16px;
+	width: 16px;
+	border-style: hidden;
+	text-align:center;
+}
+
+.krrule-line {
+    width: 5px; 
+    border-left: black 1px solid;	
+    border-top: black 1px solid; 
+    border-bottom: black 1px solid;
+}
+
+.krrule table {
+    border-collapse:collapse;
+    border-spacing: 0;
+}
+
+.krrule table td {
+    white-space: nowrap;
+}
+
+.krrule select.op.rel{
+    background-color: Orange;
+}
+
+.krrule select.op.logic{
+    background-color: Green;
+}
+
+.krrule select.op.arith{
+    background-color: LightBlue;
+}
+
+.krrule select.kind{
+    background-color: Grey;
+}
+
+.krrule select.value{
+    background-color: LightCyan;
+}
+
+.krrule input.value{
+    border: 1px solid;
+    background-color: LightGrey;
+}
