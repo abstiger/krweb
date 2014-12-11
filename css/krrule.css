@@ -32,7 +32,7 @@ table.krrule {
 	text-align:center;
 }
 
-.krrule-line {
+.krrule-rel-bracket {
     width: 5px; 
     border-left: black 1px solid;	
     border-top: black 1px solid; 

@@ -197,9 +197,9 @@
             tdRelOp.append(relSelect);
             trInner.append(tdRelOp);
 
-            //竖线
-            var tdLine = $('<td>', {'class': 'krrule-line'});
-            trInner.append(tdLine);
+            //关系运算符竖线
+            var tdRelBracket = $('<td>', {'class': 'krrule-rel-bracket'});
+            trInner.append(tdRelBracket);
 
             //表达式
             var tdExpression = $('<td>');
