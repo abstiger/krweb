@@ -61,8 +61,8 @@
             },
             
             onBracketMouseOver: function(element, other) {
-                element.css('background-color', 'Green');
-                other.css('background-color', 'Green');
+                element.css('background-color', 'Blue');
+                other.css('background-color', 'Blue');
             },
             
             onBracketMouseOut:function(element, other) {
@@ -72,7 +72,7 @@
             
             onArithSelectMouseOver: function(element, arith) {
                 //element.css('background-color', 'LightBlue');
-                arith.css('background-color', 'Blue');
+                arith.css('background-color', 'LightBlue');
             },
             
             onArithSelectMouseOut: function(element, arith) {
@@ -92,13 +92,22 @@
         }
         
         this.settings = $.extend(true, {}, this.defaults, options);
+        this.init();
     };
 
     RuleBuilder.prototype = {
         
+        init: function() {
+            
+        },
+        
         load: function(ruleStr) {
+            var ruleData = NEW_RELATION; 
+            if (ruleStr && $.trim(ruleStr).length>0) {
+                ruleData = JSON.parse(ruleStr);
+            }
             var $table = $('<table>', {'class': 'krrule'});
-            $table.append(this.buildRule(JSON.parse(ruleStr)));
+            $table.append(this.buildRule(ruleData));
             $(this.element).html($table);
             return this;
         },
@@ -321,7 +330,9 @@
             for (var op in this.settings.E_KRCalcOp) {
                 if (this.settings.E_KRCalcOp[op].type == 'arith') {
                     arithSelect.append($('<option>', {'value': op,
-                    'text': this.settings.E_KRCalcOp[op].desc, 'selected': ruleData.op == op}));
+                    'text': this.settings.E_KRCalcOp[op].desc, 
+                    'selected': ruleData.op == op})
+                    .css('color', this.settings.E_KRCalcOp[op].color));
                 }
             }
             arithSelect.change(onArithSelectChange.call(this, tr));
@@ -368,7 +379,9 @@
             var kindSelect = $('<select>', {'class': 'kind'});
             for (var kd in this.settings.E_KRCalcKind) {
                 kindSelect.append($('<option>', {'value': kd,
-                'text': this.settings.E_KRCalcKind[kd].desc, 'selected': ruleData.kind == kd}));
+                'text': this.settings.E_KRCalcKind[kd].desc, 
+                'selected': ruleData.kind == kd})
+                .css('color', this.settings.E_KRCalcKind[kd].color));
             }
             kindSelect.change(onKindSelectChange.call(this, ruleData));
             tdElement.append(kindSelect);
@@ -389,7 +402,7 @@
                 tr.remove();
             }
         }
-    }
+    };
 
     function onKindSelectChange(ruleData) {
         var _this = this;
@@ -409,19 +422,19 @@
             }
             
             if(options && options != 'undefined') {
-                var select = $('<select>', {'class': 'value'});
+                var $select = $('<select>', {'class': 'value'});
                 for(var i=0; i < options.length; i++) {
-                    select.append($('<option>', {'text': options[i].desc,
+                    $select.append($('<option>', {'text': options[i].desc,
                     'value': options[i].value, selected: options[i].value==ruleData.value}));
                 }
-                $(this).after(select);
+                $(this).after($select);
             } else {
-                var text = $('<input>', {'type':'text', 'class':'value', 'value':ruleData.value});
-                $(this).after(text);
+                var $text = $('<input>', {'type':'text', 'class':'value', 'value':ruleData.value});
+                $(this).after($text);
             }
             currentValue.remove();
         }
-    }
+    };
     
     $.fn.KRRule = function(options) {
         
