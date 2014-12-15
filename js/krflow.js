@@ -47,10 +47,33 @@
           
           // TODO:Tiger add judge click event
           myDiagram.addDiagramListener("ObjectDoubleClicked", function(e) {
-                var part = e.subject.part;
-                if ((part instanceof go.Node)) {
-                    console.log("Clicked on " + part.data.key);
-                }
+              var part = e.subject.part;
+              if ((part instanceof go.Node && part.data.category === "Judge")) {
+                  var $krrulediv = $('<div>', {'id':part.data.key});
+                  var krrule = null;
+                  var d = dialog({
+                    id: part.data.key,
+                    title: part.data.text,
+                    content: $krrulediv,
+                    onshow: function () {
+                        krrule = $krrulediv.KRRule();
+                        krrule.load(part.data.rulestr);
+                    },
+                    onclose: function () {
+                        alert('close');
+                    },
+                    okValue: '确认',
+                    ok: function () {
+                        part.data.rulestr = krrule.dump();
+                        alert(krrule.dump());
+                    },
+                    cancelValue: '取消',
+                    cancel: function () {
+                        alert('cancel');
+                    },
+                  });
+                  d.show();
+              }
           });
         
           // helper definitions for node templates
@@ -97,7 +120,7 @@
         
           var lightText = 'whitesmoke';
         
-          myDiagram.nodeTemplateMap.add("",  // the default category
+          myDiagram.nodeTemplateMap.add("Step",  // the step category
             go.GraphObject.make(go.Node, "Spot", nodeStyle(),
               // the main object is a Panel that surrounds a TextBlock with a rectangular Shape
               go.GraphObject.make(go.Panel, "Auto",
@@ -122,6 +145,31 @@
               makePort("B", go.Spot.Bottom, true, false)
             ));
         
+          myDiagram.nodeTemplateMap.add("Judge",  // the Judge category
+            go.GraphObject.make(go.Node, "Spot", nodeStyle(),
+              // the main object is a Panel that surrounds a TextBlock with a rectangular Shape
+              go.GraphObject.make(go.Panel, "Auto",
+                go.GraphObject.make(go.Shape, "Rectangle",
+                  { fill: "#00A9C9", stroke: null },
+                  new go.Binding("figure", "figure")),
+                go.GraphObject.make(go.TextBlock,
+                  {
+                    font: "bold 11pt Helvetica, Arial, sans-serif",
+                    stroke: lightText,
+                    margin: 8,
+                    maxSize: new go.Size(160, NaN),
+                    wrap: go.TextBlock.WrapFit,
+                    editable: false
+                  },
+                  new go.Binding("text", "text").makeTwoWay())
+              ),
+              // four named ports, one on each side:
+              makePort("T", go.Spot.Top, false, true),
+              makePort("L", go.Spot.Left, true, true),
+              makePort("R", go.Spot.Right, true, true),
+              makePort("B", go.Spot.Bottom, true, false)
+          ));
+            
           myDiagram.nodeTemplateMap.add("Start",
             go.GraphObject.make(go.Node, "Spot", nodeStyle(),
               go.GraphObject.make(go.Panel, "Auto",
@@ -220,8 +268,8 @@
                 nodeTemplateMap: myDiagram.nodeTemplateMap,  // share the templates used by myDiagram
                 model: new go.GraphLinksModel([  // specify the contents of the Palette
                   { category: "Start", text: "Start" },
-                  { text: "Step" },
-                  { text: "Judge", figure: "Diamond" },
+                  { category: "Step", text: "Step" },
+                  { category: "Judge", text: "Judge", figure: "Diamond" },
                   { category: "End", text: "End" },
                   { category: "Comment", text: "Comment", figure: "RoundedRectangle" }
                 ])
