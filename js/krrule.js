@@ -120,16 +120,7 @@
         
         collectData: function(node, parent) {
             var _this = this;
-            if (node.is('.exp')) {
-                var _exp = {op:null, child:[]};
-                _exp.op = parseInt(node.find('.op').val());
-                node.children().each(function() {
-                    var val = _this.collectData($(this), _exp);
-                    if (val != null) _exp.child.push(val);
-                });
-                //console.log('exp:'+JSON.stringify(_exp));
-                return _exp;
-            } else if (node.is('.ele')) {
+            if (node.is('.ele')) {
                 var _ele = {kind: null, value: null};
                 _ele.kind = parseInt(node.find('.kind').val());
                 if (this.settings.E_KRCalcKind[_ele.kind].type == 'Int') {
@@ -141,6 +132,24 @@
                 }
                 //console.log('ele:'+JSON.stringify(_ele));
                 return _ele;
+            } else if (node.is('.exp')) {
+                var _exp = {op:null, child:[]};
+                if (node.is('.exp.arith')) {
+                    _exp.op = parseInt(node.find('.op.arith').val());
+                } else if (node.is('.exp.logic')) {
+                    _exp.op = parseInt(node.find('.op.logic').val());
+                } else if (node.is('.exp.rel')) {
+                    _exp.op = parseInt(node.find('.op.rel').val());
+                } else {
+                    throw('unsupported node type'+node.attr('class'));
+                }
+
+                node.children().each(function() {
+                    var val = _this.collectData($(this), _exp);
+                    if (val != null) _exp.child.push(val);
+                });
+                //console.log('exp arith:'+JSON.stringify(_exp));
+                return _exp;
             } else {
                 node.children().each(function() {
                     var val = _this.collectData($(this), parent);
@@ -179,7 +188,7 @@
 
         buildRel: function(ruleData) {
             var _this = this;
-            var tr = $('<tr>', {'class': 'exp relation'});
+            var tr = $('<tr>', {'class': 'exp rel'});
 
             //删除按钮
             var tdRemove = $('<td>');
@@ -200,7 +209,8 @@
             for (var op in this.settings.E_KRCalcOp) {
                 if (this.settings.E_KRCalcOp[op].type == 'relation') {
                     relSelect.append($('<option>', {'value': op,
-                    'text': this.settings.E_KRCalcOp[op].desc, 'selected': ruleData.op == op}));
+                    'text': this.settings.E_KRCalcOp[op].desc, 
+                    'selected': ruleData.op == op}));
                 }
             }
             tdRelOp.append(relSelect);
@@ -278,7 +288,8 @@
             for (var op in this.settings.E_KRCalcOp) {
                 if (this.settings.E_KRCalcOp[op].type == 'logic') {
                     logicSelect.append($('<option>', {'value': op,
-                    'text': this.settings.E_KRCalcOp[op].desc, 'selected': ruleData.op == op}));
+                    'text': this.settings.E_KRCalcOp[op].desc, 
+                    'selected': ruleData.op == op}));
                 }
             }
             logicSelect.mouseover(function(e) {
@@ -425,11 +436,13 @@
                 var $select = $('<select>', {'class': 'value'});
                 for(var i=0; i < options.length; i++) {
                     $select.append($('<option>', {'text': options[i].desc,
-                    'value': options[i].value, selected: options[i].value==ruleData.value}));
+                    'value': options[i].value, 
+                    selected: options[i].value==ruleData.value}));
                 }
                 $(this).after($select);
             } else {
-                var $text = $('<input>', {'type':'text', 'class':'value', 'value':ruleData.value});
+                var $text = $('<input>', {'type':'text', 'class':'value', 
+                    'value':ruleData.value});
                 $(this).after($text);
             }
             currentValue.remove();
